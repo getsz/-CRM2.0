@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import { Layout, Menu, Breadcrumb, Icon,Tabs  } from 'antd';
 import  './index.css';
 import imgURL from './img/icon1.png';
+import imgURL2 from './img/icon2.png';
+import laba from './img/laba.png';
+import qizi from './img/qizi.png';
+import xiangxi from './img/xiangxi.png';
+import liuyan from './img/liuyan.png';
 import axios from 'axios';
  
 import Page from "../../ui/page/UIPage";
@@ -13,8 +18,12 @@ import { connect } from "react-redux";
 import * as itemsActions from "../../reducers/items/itemsAction";
 import * as filterAction from "../../reducers/filter/filterAction";
 import { bindActionCreators } from "redux";
+//import Select from 'react-select';
  
-  
+//下拉框
+const defineArr = [{name: '小明', things: ['小明的笔','小明的纸','小明的画']},{name: '小黑', things: ['小黑的笔','小黑的纸','小黑的画']},{name: '小黄', things: ['小黄的笔','小黄的纸','小黄的画']},{name: '小花', things: ['小花的笔','小花的纸','小花的画']}];
+
+
 //import lkLog from "lk-log";
 //const logger = lkLog.getLogger("MainContainer");
 
@@ -24,10 +33,12 @@ import "./main-container.less";
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
+ // const url2='http://127.0.0.1:8080/jg/lpage/lmsp/lbpm/PAInsDetail?l_fragment=1&insId='
+   const url2='http://192.168.2.86:8380/jg/lpage/lmsp/lbpm/PAInsDetail?l_fragment=1&insId='
 
 const TabPane = Tabs.TabPane;
 function callback(key) {
-  console.log(key);
+  //console.log(key);
 }
 
  
@@ -42,15 +53,35 @@ class Main extends React.Component {
 
     super(props);
 
+   
+
     this.state = {
 
       posts: String,
        post2: [],
       post3:Array,
       dbsydata: [],
+      selectchance:[],
       member:[],
-      addchance:['chance:1001','custname:2002']
+      addchance:{chance:'11',custname:'22',chancename:'33',type:'44'},
+      custname:'',
+      chancename:'',
+      yewujh:'',
+      kehumc:'',
+      jihuimc:'',
+      yewulx:'',
+      faqixt:'',
+      youxiancd:'',
+      jiezhirq:'',
+      kehulxr:'',
+      lianxifs:'',
+      yujizjgm:'',
+      ywlx:[],
+      yxcd:[],
     } 
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChange2 = this.handleChange2.bind(this);
   }
 
  
@@ -83,8 +114,8 @@ class Main extends React.Component {
     dbsy.l_sign=null;
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8080/jg/lpageconn/',
-     // url: 'http://192.168.2.86:8380/jg/lpageconn/',
+     // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+      url: 'http://192.168.2.86:8380/jg/lpageconn/',
       params: dbsy
     }).then(res => {
       const dbsydata = res.data.data; 
@@ -99,14 +130,58 @@ class Main extends React.Component {
     member.l_sign=null;
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8080/jg/lpageconn/',
-     //url: 'http://192.168.2.86:8380/jg/lpageconn/',
+     // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+      url: 'http://192.168.2.86:8380/jg/lpageconn/',
       params: member
     }).then(res => {
       const member = res.data; 
         this.setState({ member });
       });
 
+         //第二页列表接口调用
+    var selectchance={};
+    selectchance.busiNo='xtwork.ReactSelectChanceBo';
+    selectchance.param='{}';
+    selectchance.l_sign=null;
+    axios({
+      method: 'post',
+      // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+       url: 'http://192.168.2.86:8380/jg/lpageconn/',
+      params: selectchance
+    }).then(res => {
+      const selectchance = res.data.data; 
+        this.setState({ selectchance });
+      });
+
+         //第二页业务类型select接口调用
+    var ywlx={};
+    ywlx.busiNo='xtwork.ReactSelectChanceYwlxBo';
+    ywlx.param='{}';
+    ywlx.l_sign=null;
+    axios({
+      method: 'post',
+     //  url: 'http://127.0.0.1:8080/jg/lpageconn/',
+       url: 'http://192.168.2.86:8380/jg/lpageconn/',
+      params: ywlx
+    }).then(res => {
+      const ywlx = res.data.data; 
+        this.setState({ ywlx });
+      });
+      //第二页优先程度select接口调用
+      var yxcd={};
+      yxcd.busiNo='xtwork.ReactSelectChanceYxcdBo';
+      yxcd.param='{}';
+      yxcd.l_sign=null;
+      axios({
+        method: 'post',
+        // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+         url: 'http://192.168.2.86:8380/jg/lpageconn/',
+        params: yxcd
+      }).then(res => {
+        const yxcd = res.data.data; 
+          this.setState({ yxcd });
+        });
+  
     //
  
 
@@ -121,11 +196,11 @@ class Main extends React.Component {
     p.l_sign=null;
     axios({
       method: 'post',
-      url: 'http://127.0.0.1:8080/jg/lpageconn/',
-     // url: 'http://192.168.2.86:8380/jg/lpageconn/',
+       //url: 'http://127.0.0.1:8080/jg/lpageconn/',
+       url: 'http://192.168.2.86:8380/jg/lpageconn/',
       params: p
     }).then(res => {
-      console.log(res); 
+        
       const posts = res.data.totalCount;
      // console.log(posts); 
       const post2 = res.data.data; 
@@ -150,31 +225,114 @@ for(var index in post2) {
       
       //  console.log("third page willunmount");
     }
-     
+    
+    //onchange名称
+    handleInputChange(event) {
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const name = target.name;
+  
+      this.setState({
+        [name]: value
+      });
+    }
+
+
+// //下拉框
+//     changeName(e) {
+//       this.setState({ selectName: e.target.value });
+//       defineArr.map((item, index) => {
+//         if(e.target.value === item.name) {
+//           this.setState({ selectThing: item.things[0] });
+//         }
+//         return true;
+//       })
+//     };
+
+
+
+//提交触发按钮
     handleChange (event) {
-      alert('aa')
+       
      // this.setState({value: '菜鸟教程'});
         //tab2页面保存接口调用
       
    var addchancef={};
    addchancef.busiNo='xtwork.ReactAddChanceBo';
-   addchancef.param= '';
+   addchancef.param= this.state;
    addchancef.l_sign=null;
    axios({
      method: 'post',
-     url: 'http://127.0.0.1:8080/jg/lpageconn/',
-    //url: 'http://192.168.2.86:8380/jg/lpageconn/',
+     // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+      url: 'http://192.168.2.86:8380/jg/lpageconn/',
      params: addchancef
    }) ;
+   alert("业务机会提交成功！");
+//清空表单项目
+this.setState({yewujh:''})  
+this.setState({kehumc:''})
+this.setState({jihuimc:''})
+this.setState({yewulx:''})
+this.setState({faqixt:''})
+this.setState({youxiancd:''})
+this.setState({jiezhirq:''})  
+this.setState({kehulxr:''})  
+this.setState({lianxifs:''})  
+this.setState({yujizjgm:''})  
+
     }
+//提交触发流程按钮
+handleChange2 (event) {
+       
+  // this.setState({value: '菜鸟教程'});
+     //tab2页面保存接口调用
+   
+var addchancelc={};
+addchancelc.busiNo='xtwork.ReactAddChanceLCBo';
+addchancelc.param= this.state;
+addchancelc.l_sign=null;
+axios({
+  method: 'post',
+   // url: 'http://127.0.0.1:8080/jg/lpageconn/',
+    url: 'http://192.168.2.86:8380/jg/lpageconn/',
+  params: addchancelc
+}) ;
+alert("业务机会审核流程发起成功！");
+//清空表单项目
+this.setState({yewujh:''})  
+this.setState({kehumc:''})
+this.setState({jihuimc:''})
+this.setState({yewulx:''})
+this.setState({faqixt:''})
+this.setState({youxiancd:''})
+this.setState({jiezhirq:''})  
+this.setState({kehulxr:''})  
+this.setState({lianxifs:''})  
+this.setState({yujizjgm:''})  
+
+ }
+
 
     render() {
      
-      var numbers = [1,2,3,4,5,6,7,8,9]; 
-      var students =this.state.post2;
-      var dbsydatalist =this.state.dbsydata;
-      var member=this.state.member;
-      // var students = ["张三然","李慧思","赵思然","孙力气","钱流量"];
+      var numbers = [1,2,3,4,5,6,7,8,9]; //测试
+      var students =this.state.post2;//测试
+      var dbsydatalist =this.state.dbsydata;//待办事宜数据列
+      var member=this.state.member;//右侧人员信息数据
+      var selectchance = this.state.selectchance;//第二页机会下部分数据列
+       var ywlx = this.state.ywlx;//第二页业务类型select选择框
+   
+          const ywlxss = ywlx.map((item, index) => {
+            return <option value={item.ywlxid}>{item.ywlxname}</option>
+          });
+      var yxcd = this.state.yxcd;//第二页优先程度select选择框
+   
+          const yxcdss = yxcd.map((item, index) => {
+            return <option value={item.yxcdid}>{item.yxcdname}</option>
+          });
+ 
+
+     
         return (
             <div className="ui-page">
                 <div style={{width :'70%',height:'100%', float:'left',border:'1px solid #ccc',borderRadius: '5px' ,marginLeft:'15px',marginTop:'15px',background:'#FFFFFF'}}>
@@ -193,14 +351,15 @@ for(var index in post2) {
               <h3  style={{fontWeight:'bold'}}>{v.fqr}：{v.lcname}</h3>
 {/*橙色div*/}<div style={{height:'55px', background:'#FFF8DB', border:'1px solid #FADD9B',borderRadius:'5px',padding:'15px 15px'}}>
             <div style={{width:'70%',float:'left'}}>
-              <font style={{color:'#ADADAD'}}>最新跟踪记录：{v.gxrq} {v.gxr}</font><font style={{fontWeight:'bold'}}>{v.lcjd}</font> 
+            
+            <font style={{color:'#ADADAD'}}>最新跟踪记录：{v.gxrq} {v.gxr}</font><font style={{fontWeight:'bold'}}>{v.lcjd}</font>  
             </div>
             <div style={{width:'30%',float:'right'}}>
-            <font style={{color:'#F7986B'}}>详细跟踪记录</font>
+            <a href={url2+v.lcid}><font style={{color:'#F7986B'}}>详细跟踪记录</font> </a>
             </div>
                         </div>
             <div style={{ padding:'15px 0px 5px 0px',height:'33px'}}>
-            <input value='查看' type='button' onClick={() => this.componentDidMount()} style={{ border:'none', height:'28px', borderRadius:'5px',width:'70px', float:'right',background:'#1F93FF',color:'#fff'}}/>
+            <a href={url2+v.lcid}> <input value='查看' type='button'  style={{ border:'none', height:'28px', borderRadius:'5px',width:'70px', float:'right',background:'#1F93FF',color:'#fff'}}/></a>
             </div>
             </div>
             </div>
@@ -215,13 +374,14 @@ for(var index in post2) {
       {/* TAB2--------------------------------- TAB2--------------------------------TAB2 */}
     <TabPane tab="业务机会" key="2">
     <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+    <form>
       <table style={{width: '100%'}}>
         <tr>
           <td>
             <table style={{width: '100%'}}>
               <tr>
                 <td colspan='6'> 
-                    <textarea style={{resize: 'none',width: '100%',border: '1px solid #ccc',padding: '20px 4px', borderRadius: '5px'}}>今天和银联老总</textarea> 
+                    <textarea value={this.state.yewujh}   onChange={this.handleInputChange} name='yewujh' style={{resize: 'none',width: '100%',border: '1px solid #ccc',padding: '20px 4px', borderRadius: '5px'}}>今天和银联老总</textarea> 
                 </td>
               </tr>
               <tr>
@@ -230,39 +390,46 @@ for(var index in post2) {
                 </td>
                 <td style={{width:'24%'}}>
                 {/*     display: 'block',width: '70%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px' */}
-                  <input type='text' id='kehumc' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                  <input  value={this.state.kehumc}  type='text' name='kehumc' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}   onChange={this.handleInputChange}></input>
                 </td>
                 <td  style={{   padding: '10px 0px   10px 0px'}}>
                   机会名称
                 </td>
                 <td style={{width:'24%'}}>
-                <input id ='jihuimc' type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input value={this.state.jihuimc}  name ='jihuimc' type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}   onChange={this.handleInputChange} ></input>
                 </td>
                 <td style={{   padding: '10px 0px   10px 0px'}}>
                   业务类型
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
-                </td>
+                {/* <input name='yewulx'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                </td> */}
+                
+              <select value={this.state.yewulx} name='yewulx'   onChange={this.handleInputChange} style={{width:'80%'}}>{ywlxss}</select>
+        
+</td>
               </tr>
               <tr>
               <td style={{   padding: '10px 0px   10px 0px'}}>
                  发起协同 
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input  value={this.state.faqixt} name='faqixt'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
               </td>
                 <td style={{   padding: '10px 0px   10px 0px'}}>
                   优先程度
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                {/* <input name='youxiancd'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input> */}
+              
+                <select  value={this.state.youxiancd}  name='youxiancd'   onChange={this.handleInputChange} style={{width:'80%'}}>{yxcdss}</select>
+        
                 </td>
                 <td style={{   padding: '10px 0px   10px 0px'}}>
                   截止日期
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input value={this.state.jiezhirq}  name='jiezhirq'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
                 </td>
               </tr>
               <tr>
@@ -270,26 +437,26 @@ for(var index in post2) {
                  客户联系人 
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input value={this.state.kehulxr}  name='kehulxr'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
                </td>
                 <td style={{  padding: '10px 0px   10px 0px'}}>
                   联系方式
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input value={this.state.lianxifs}  name='lianxifs'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
                 </td>
                 <td style={{   padding: '10px 0px   10px 0px'}}>
                   预计资金规模
                 </td>
                 <td style={{width:'24%'}}>
-                <input type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
+                <input value={this.state.yujizjgm}  name='yujizjgm'  onChange={this.handleInputChange} type='text' style={{display: 'block',width: '80%',border: '1px solid #ccc',borderRadius: '5px',padding: '4px'}}></input>
                 </td>
               </tr>
               <tr>
               <td  colspan='6' style={{  padding: '10px 0px   10px 0px'}}>
-                <button id='tijiao' type="button" style={{backgroundColor: '#1E90ff', color:'#fff',border: '1px solid #ccc', borderRadius: '5px'}} onClick={this.handleChange}>提交</button>
+                <button   type="button"   style={{backgroundColor: '#1E90ff', color:'#fff',border: '1px solid #ccc', borderRadius: '5px'}} onClick={this.handleChange}>提交</button>
                 &nbsp;  &nbsp;
-                <button type="button" style={{backgroundColor: '#1E90ff', color:'#fff',border: '1px solid #ccc',borderRadius: '5px'}}>提交并发起协同</button>
+                <button type="button" style={{backgroundColor: '#1E90ff', color:'#fff',border: '1px solid #ccc',borderRadius: '5px'}} onClick={this.handleChange2} >提交并发起协同</button>
                 </td>
               </tr>
             </table>
@@ -308,170 +475,99 @@ for(var index in post2) {
             <label><input name="Fruit" type="checkbox" value="" />已结束的 </label>
           </td>
         </tr>
-        <tr>
-          <td style={{width:'100%',   borderRadius: '5px', padding: '15px 0px   15px 5px'}}>
-            <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 0px   15px 5px'}}>
+ 
+    </table>
+    </form>
+
+    {/*列表div*/}<div style={{padding:'15px,0px,0px,0px',marginTop:'15px'}}>  
+    <ul>  
+                    {  
+           selectchance.map(function(v){  
+            return <div  style={{position:'relative', border:'1px solid #ccc',borderRadius:'5px',padding:'15px 15px',background:'#F5F5F5',marginBottom:'30px'}}>
+            <h2><font color="#FFA500" style={{fontWeight:'bold'}}>{v.kehumc}</font></h2>
+           
+            <table style={{width:'100%',  borderRadius: '5px', padding: '15px 0px   15px 5px'}}>
             <tr>
-              <td colspan='2'  style={{width:'100%',   borderRadius: '5px', padding: '15px 0px   0px 15px'}}>
-                <h2><font color="#FFA500">上海银联股份有限公司</font></h2>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '0px 0px   0px 15px'}}>
-                发布于 2018-03-02 18：24
-              </td>
-            </tr>
-            <tr>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-                发起人：<font style={{fontWeight:'bold'}}> 王承揽（我）</font>
-              </td>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-                预计资金：<font style={{fontWeight:'bold'}}>200,200.00  </font>
-              </td>
-            </tr>
-            <tr>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-                业务类型：<font style={{fontWeight:'bold'}}>新三板上市</font>
-              </td>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-               截止日期：<font style={{fontWeight:'bold'}}>2018-03-03</font>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '5px 0px   5px 15px'}} >
-                机会描述：<font style={{fontWeight:'bold'}}>银联有意几年IPO，麻烦提供一份适合银联的详尽IPO解决方案。</font>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '15px 15px   15px 15px'}}>
-              <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 15px   15px 15px'}}>
-                <tr>
-                  <td style={{padding:'15px'}}>
-                    最新跟踪记录：2018-03-05 张承做 <font style={{fontWeight:'bold'}}>完成了IPO解决方案，可以正式立项签合同了</font>
-                </td>
-                </tr>
-              </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '15px 15px   15px 15px'}}>
-              <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 15px   15px 15px'}}>
-                <tr>
-                  <td  style={{padding:'15px'}}>
-                    对接部门：<font style={{fontWeight:'bold'}}>IPO业务部</font>
-                </td>
-                <td  style={{padding:'15px'}}>
-                    对接人：<font style={{fontWeight:'bold'}}>张承做</font>
-                </td>
-                <td  style={{padding:'15px'}}>
-                    分配人：<font style={{fontWeight:'bold'}}>李协同</font>
-                </td>
-                </tr>
-              </table >
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '5px 0px   5px 15px'}}>
-                已对接：<font style={{fontWeight:'bold'}}>张承做（IPO业务部）</font>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '10px 15px   15px 15px'}}>
-                <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 15px   15px 15px'}}>
-                  <tr>
-                    <td   style={{padding: '5px 0px   5px 15px'}}>
-                    <font style={{fontWeight:'bold'}}>张承做(IPO业务部)说:</font>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td   style={{padding: '5px 0px   5px 15px'}}>
-                      这个需求我之前也提了，但是好像没有继续做下去，我尽力做方案，但不保证成啊，哥
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style={{padding: '5px 15px   5px 15px'}}>
-                    <hr  />
-                    </td>
-                    </tr>
-                  <tr>
-                    
-                          <td   style={{padding: '5px 15px   5px 15px'}}>
-                          <textarea style={{resize: 'none', background:'#D3D3D3', width: '100%',border: '1px solid #ccc',padding: '20px 4px', borderRadius: '5px'}}>说点什么。。。</textarea> 
-                          
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td style={{width:'100%',   borderRadius: '5px', padding: '15px 0px   15px 5px'}}>
-            <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 0px   15px 5px'}}>
-            <tr>
-              <td colspan='2'  style={{width:'100%',   borderRadius: '5px', padding: '15px 0px   0px 15px'}}>
-                <h2><font color="#FFA500">上海长城宽带</font></h2>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '0px 0px   0px 15px'}}>
+              <td colspan='2' style={{padding: '5px 0px   20px 5px'}}>
                 发布于 2018-03-01 18：24
               </td>
             </tr>
             <tr>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-                发起人：<font style={{fontWeight:'bold'}}> 王承揽（我）</font>
+              <td style={{padding: '5px 0px   5px 5px'}}>
+                发起人：<font style={{fontWeight:'bold'}}> {v.membername}</font>
               </td>
-              <td style={{padding: '5px 0px   5px 15px'}}>
-                预计资金：<font style={{fontWeight:'bold'}}>400,200.00  </font>
+              <td style={{padding: '5px 0px   5px 5px'}}>
+                预计资金：<font style={{fontWeight:'bold'}}>{v.yujizjgm}  </font>
               </td>
             </tr>
             <tr>
-              <td style={{padding: '5px 0px   5px 15px'}}>
+              <td style={{padding: '5px 0px   5px 5px'}}>
                 业务类型：<font style={{fontWeight:'bold'}}>新三板上市</font>
               </td>
-              <td style={{padding: '5px 0px   5px 15px'}}>
+              <td style={{padding: '5px 0px   5px 5px'}}>
                截止日期：<font style={{fontWeight:'bold'}}>2018-03-03</font>
               </td>
             </tr>
             <tr>
-              <td colspan='2' style={{padding: '5px 0px   5px 15px'}} >
-                机会描述：<font style={{fontWeight:'bold'}}>银联有意几年IPO，麻烦提供一份适合银联的详尽IPO解决方案。</font>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '15px 15px   15px 15px'}}>
-              <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 15px   15px 15px'}}>
-                <tr>
-                  <td style={{padding:'15px'}}>
-                    最新跟踪记录：2018-03-05 张承做 <font style={{fontWeight:'bold'}}>完成了IPO解决方案，可以正式立项签合同了</font>
-                </td>
-                </tr>
-              </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan='2' style={{padding: '15px 15px   15px 15px'}}>
-              <table style={{width:'100%', border: '1px solid #ccc', borderRadius: '5px', padding: '15px 15px   15px 15px'}}>
-                <tr>
-                  <td  style={{padding:'15px'}}>
-                    对接部门：<font style={{fontWeight:'bold'}}>IPO业务部</font>
-                </td>
-                <td  style={{padding:'15px'}}>
-                    对接人：<font style={{fontWeight:'bold'}}>张承做</font>
-                </td>
-                <td  style={{padding:'15px'}}>
-                    分配人：<font style={{fontWeight:'bold'}}>李协同</font>
-                </td>
-                </tr>
-              </table>
+              <td colspan='2' style={{padding: '5px 0px   5px 5px'}} >
+                机会描述：<font style={{fontWeight:'bold'}}>{v.chance}</font>
               </td>
             </tr>
             </table>
-          </td>
-        </tr>
-    </table>
+ {/*橙色div*/}<div style={{height:'55px', background:'#FFF8DB', border:'2px solid #FADD9B',borderRadius:'5px',padding:'15px 35px 15px 35px'}}>
+            <div style={{width:'70%',float:'left'}}>
+            <font style={{color:'#ADADAD'}}>最新跟踪记录：{v.gxrq} {v.gxr}</font><font style={{fontWeight:'bold'}}>{v.lcjd}</font> 
+            </div>
+            <div style={{width:'30%',float:'right'}}>
+            <font style={{color:'#F7986B'}}>详细跟踪记录</font>
+            </div>
+  {/*end橙色div*/}</div>
+   {/*蓝色div*/}<div style={{height:'55px', background:'#E6F2FF', border:'2px solid #B4D6FF ',borderRadius:'5px',padding:'15px 15px',marginTop:'15px'}}>
+              <table style={{width:'100%'}} >
+                <tr style={{width:'100%'}}><td>对接部门：<font style={{fontWeight:'bold'}}> IPO业务部</font></td><td>对接人： <font style={{fontWeight:'bold'}}>张承做</font></td><td>分配人： <font style={{fontWeight:'bold'}}>李协同</font></td></tr>
+                </table>
+  {/*end蓝色div*/}</div>
+ {/*灰色div*/} <div  style={{height:'55px', background:'#FAFAFA',padding:'15px 55px 15px 35px', marginTop:'10px',marginLeft:'-15px',marginRight:'-15px',marginBottom:'10px'}}>
+              <table style={{width:'100%',marginLeft:'20px'}}>
+                <tr><td>已对接：<font style={{fontWeight:'bold'}}>张承做（IPO业务部）</font></td><td>留言（1）</td></tr>
+              </table>
+  {/*end灰色div*/}</div>
+   {/*白色div*/}<div style={{  background:'#FFFFFF', border:'1px solid #DBE0EB ',borderRadius:'5px',padding:'15px 15px',marginTop:'15px'}}>
+   <table style={{width:'100%'}}>
+                <tr><td>张承做（IPO业务部） 说：</td><td>2018-03-03 12：30</td></tr>
+                <tr>
+                    <td colspan='2'  style={{padding: '5px 0px   5px 0px'}}>
+                      这个需求我之前也提了，但是好像没有继续做下去，我尽力做方案，但不保证成啊，哥
+                    </td>
+                  </tr>
+                <tr>
+                    <td colspan='2' style={{padding: '5px 15px   5px 0px'}}>
+                    <hr style={{color:'#EFF1F4'}}/>
+                    </td>
+                    </tr>
+                    <tr>
+                    
+                    <td  colspan='2' style={{padding: '5px 15px   5px 0px'}}>
+                    <textarea style={{resize: 'none', background:'#EFF1F4', width: '100%',border: '1px solid #ccc',padding: '20px 4px', borderRadius: '5px'}}>说点什么。。。</textarea> 
+                    
+              </td>
+            </tr>
+              </table>
+               
+  {/*end白色div*/}</div>
+  <div style={{ left:'280px',top:'10px',position:'absolute'}}> <img src={imgURL2} />  </div>
+  <div style={{ left:'20px',top:'200px',position:'absolute'}}> <img src={laba} />  </div>
+   
+  <div style={{ left:'20px',top:'330px',position:'absolute'}}> <img src={qizi} />  </div>
+ 
+ 
+            </div>
+              
+        })             
+  }  
+  </ul> 
+    
+{/*列表divEND*/}</div>
       </div>
     </TabPane>
       {/* TAB3---------------------------------- TAB3--------------------------------TAB3 */}
@@ -731,15 +827,15 @@ for(var index in post2) {
       </div></TabPane>
       {/* TAB5---------------------------------- TAB5--------------------------------TAB5 */}
     <TabPane tab="服领导驾驶舱（领）" key="5">
-    <h1>下面为data数据</h1>
  
-    <ul>  
+ 
+    {/* <ul>  
                     {  
                         students.map(function(v){  
                             return <li>{v.name}+++++{v.id}</li>  
                         })  
                     }  
-                </ul>   
+                </ul>    */}
     </TabPane>
       {/* TAB6---------------------------------- TAB6--------------------------------TAB6 */}
     <TabPane tab="机构业务概览（领）" key="6">
